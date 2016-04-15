@@ -1,0 +1,50 @@
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/></head>
+  <body>
+    <div id="game"></div>
+    <script type="text/javascript" src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+    <script>
+      Crafty.init(288, 512, document.getElementById('game'));
+      // Crafty.background('url(flappybird_pics/bg_day.png) no-repeat center center');
+
+      Crafty.e('background, 2D, Canvas, Image, Mouse')
+        .attr({w:Crafty.viewport.width, h:Crafty.viewport.height})
+        .image("flappybird_pics/bg_day.png", "repeat")
+        .bind('Click', function(MouseEvent){
+          //bird fly
+        });
+
+      var bird = Crafty.e('bird, 2D, Canvas, Color, Twoway, Gravity, Jumper')
+        .attr({x:10, y:0, w:25, h:25})
+        .color('red')
+        .twoway(200)
+        .gravity('Floor');
+
+        //give the bird ability to jump
+        bird.hasDoubleJumpPowerUp = true;
+        //if the bird in the sky, it can jump
+        bird.bind("CheckJumping", function(floor){
+          if (!floor && bird.hasDoubleJumpPowerUp) {
+            player.canJump = true;
+            bird.hasDoubleJumpPowerUp = true;
+          }
+          // else if(floor){
+          //   player.canJump = false;
+          //   bird.hasDoubleJumpPowerUp = false;
+          // }
+        });
+        // if the bird on the floor, it dies
+        bird.bind("LandedOnTheFloor", function(floor){
+          //on the floor, can't fly
+          bird.hasDoubleJumpPowerUp = true;
+        });
+
+        bird.jumper(['UP_ARROW', 'W']);
+
+      var floor = Crafty.e('Floor, 2D, Canvas, Color, Mouse')
+        .attr({x:0, y:512, w:288, h:5})
+        .color('green');
+    </script>
+  </body>
+</html>
