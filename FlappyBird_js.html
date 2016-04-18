@@ -8,18 +8,24 @@
       Crafty.init(288, 512, document.getElementById('game'));
 
       //point
-      var point = 1;
+      var point = 0;
       //bird lives or not
       var birdAlive = true;
+      //touch enable
+      Crafty.multitouch(true);
 
       //background definition
       this.backGround = Crafty.e('background, 2D, Canvas, Image, Motion, Mouse, Touch')
         .attr({w:574, h:Crafty.viewport.height})
         .image("flappybird_pics/bg_repeat_day.png", "no-repeat")
+        //touch to fly
         .bind('TouchStart', function(TouchPoint){
-          alert("touched");
+          Crafty.trigger("KeyDown", {key: Crafty.keys.UP_ARROW});
+        })
+        //click to fly
+        .bind('Click', function(MouseEvent){
+          Crafty.trigger("KeyDown", {key: Crafty.keys.UP_ARROW});
         });
-
         this.backGround.vx -= 8;
 
       //the points square
@@ -37,8 +43,8 @@
       var bird = Crafty.e('bird, 2D, Canvas, Image, Color, Twoway, Gravity, Jumper, Collision')
         .attr({x:30, y:100, w:48, h:48})
         .image("flappybird_pics/bird0_1.png", "repeat")
-        .twoway(200)
-        .gravityConst(700)
+        .twoway(100)
+        .gravityConst(800)
         .gravity('Floor');
         //give the bird ability to jump
         bird.hasDoubleJumpPowerUp = true;
@@ -51,7 +57,8 @@
             bird.canJump = false;
           }
         });
-        bird.jumper(200, ['UP_ARROW', 'SPACE']);
+        bird.jumper(200, ['UP_ARROW']);
+        //if hit the pipe
         bird.onHit('Pipe', function(){
           birdAlive = false;
         });
